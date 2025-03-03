@@ -1,0 +1,11 @@
+# Archivos de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Archivos CSV y de backup
+/data/*.csv
+/data/*.avro
+
+# Configuración local
+.env
