@@ -1,10 +1,10 @@
-# 🚀 Coding Challenge 
+# 🚀 **Coding Challenge**
 
 Este proyecto implementa una solución para la migración, almacenamiento, análisis y consulta de datos utilizando **FastAPI**, **PostgreSQL** y **Python**.
 
 Se presentan dos retos para el desarrollo:
 
-# Reto #1
+## **Reto #1**
 
 Eres un ingeniero de datos y vas a comenzar un proyecto importante: una migración de datos masivos a un nuevo sistema de base de datos. Debes crear una Prueba de Concepto (PoC) que cumpla con los siguientes requisitos:
 
@@ -12,19 +12,19 @@ Mover datos históricos desde archivos en formato CSV a la nueva base de datos.
 
 ✅ Crear un servicio API REST para recibir nuevos datos, asegurando que:
 
-### Cada nueva transacción cumpla con las reglas del diccionario de datos.
+### 🔹 Cada nueva transacción cumpla con las reglas del diccionario de datos.
 
-### Se puedan insertar transacciones en lotes (de 1 a 1000 filas en una sola solicitud).
+### 🔹 Se puedan insertar transacciones en lotes (de 1 a 1000 filas en una sola solicitud).
 
-### Se pueda recibir la información para todas las tablas en el mismo servicio.
+### 🔹 Se pueda recibir la información para todas las tablas en el mismo servicio.
 
-### Se respeten las reglas de datos para cada tabla.
+### 🔹 Se respeten las reglas de datos para cada tabla.
 
 ✅ Implementar una funcionalidad para hacer copias de seguridad de cada tabla y almacenarlas en el sistema de archivos en formato AVRO.
 
 ✅ Implementar una funcionalidad para restaurar una tabla específica a partir de su copia de seguridad.
 
-# Reto #2
+## **Reto #2**
 
 Explorar los datos insertados en el primer reto y proporcionar métricas específicas a los stakeholders. Se debe crear un endpoint para cada requerimiento.
 
@@ -32,22 +32,22 @@ Requerimientos:
 
 ✅ Número de empleados contratados en 2021 por trimestre, desglosado por departamento y trabajo.
 
-## Ejemplo de salida:
+#### Ejemplo de salida:
 
-departamento       trabajo       Q1   Q2   Q3   Q4
----------------------------------------------------
-Staff             Reclutador      3    0    7    11
-Staff             Gerente         2    1    0    2
-Supply Chain      Gerente         0    1    3    0
+| **departamento** | **trabajo**   | **Q1** | **Q2** | **Q3** | **Q4** |
+|-----------------|--------------|-------|-------|-------|-------|
+| Staff          | Reclutador   | 3     | 0     | 7     | 11    |
+| Staff          | Gerente      | 2     | 1     | 0     | 2     |
+| Supply Chain   | Gerente      | 0     | 1     | 3     | 0     |
 
 ✅ Lista de IDs, nombre y número de empleados contratados en los departamentos que contrataron más empleados que el promedio general de 2021. Ordenado por número de empleados contratados en orden descendente.
 
-## Ejemplo de salida:
+#### Ejemplo de salida:
 
-id     departamento      contratados
--------------------------------------
-1      Staff                45
-2      Supply Chain         12
+| **id** | **departamento** | **contratados** |
+|------|----------------|-------------|
+| 1    | Staff         | 45          |
+| 2    | Supply Chain  | 12          |
 
 
 
