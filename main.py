@@ -5,8 +5,19 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import io
 from fastapi.responses import StreamingResponse
+import traceback
 
 app = FastAPI()
+
+# Definir límites de inserción
+MAX_BATCH_SIZE = 1000
+MIN_BATCH_SIZE = 1
+# Definir estructura esperada de cada tabla
+TABLE_SCHEMAS = {
+    "departments": ["id", "department"],
+    "jobs": ["id", "job"],
+    "hired_employees": ["id", "name", "datetime", "department_id", "job_id"]
+}
 
 # Endpoint para insertar nuevos datos
 @app.post("/insert")
@@ -14,33 +25,47 @@ async def insert(data: dict = Body(...)):
     try:
         engine = get_engine()
 
-        # Validación de datos para cada tabla
-        df_employees = pd.DataFrame(data["employees"])
-        df_departments = pd.DataFrame(data["departments"])
-        df_jobs = pd.DataFrame(data["jobs"])
+        # Validación de estructura de datos
+        for table, expected_columns in TABLE_SCHEMAS.items():
+            if table in data:
+                df = pd.DataFrame(data[table])
 
-        # Validar que no haya valores nulos
-        if df_employees.isnull().values.any() or df_departments.isnull().values.any() or df_jobs.isnull().values.any():
-            raise HTTPException(status_code=400, detail="Los datos no pueden ser nulos")
+                # Validar si los datos contienen todas las columnas requeridas
+                missing_cols = [col for col in expected_columns if col not in df.columns]
+                if missing_cols:
+                    raise HTTPException(status_code=400, detail=f"Faltan columnas {missing_cols} en la tabla {table}")
 
-        # Validar IDs de departamentos y trabajos
-        valid_departments = pd.read_sql("SELECT id FROM departments", engine)
-        valid_jobs = pd.read_sql("SELECT id FROM jobs", engine)
-        
-        # Filtrar empleados solo con department_id y job_id válidos
-        df_employees = df_employees[
-            df_employees["department_id"].isin(valid_departments["id"]) &
-            df_employees["job_id"].isin(valid_jobs["id"])
-        ]
-        
-        # Insertar los datos en las tablas correspondientes
-        df_departments.to_sql("departments", engine, if_exists="append", index=False)
-        df_jobs.to_sql("jobs", engine, if_exists="append", index=False)
-        df_employees.to_sql("hired_employees", engine, if_exists="append", index=False)
+                # Validar límite de registros
+                if not (MIN_BATCH_SIZE <= len(df) <= MAX_BATCH_SIZE):
+                    raise HTTPException(status_code=400, detail=f"La tabla {table} debe contener entre {MIN_BATCH_SIZE} y {MAX_BATCH_SIZE} registros.")
+
+                # Validar que no haya valores nulos
+                if df.isnull().values.any():
+                    raise HTTPException(status_code=400, detail=f"La tabla {table} contiene valores nulos.")
+
+                # Validar FK en hired_employees
+                if table == "hired_employees":
+                    valid_departments = pd.read_sql("SELECT id FROM departments", engine)["id"].tolist()
+                    valid_jobs = pd.read_sql("SELECT id FROM jobs", engine)["id"].tolist()
+
+                    invalid_departments = df[~df["department_id"].isin(valid_departments)]["department_id"].unique().tolist()
+                    invalid_jobs = df[~df["job_id"].isin(valid_jobs)]["job_id"].unique().tolist()
+
+                if invalid_departments or invalid_jobs:
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"Los siguientes IDs no existen en la BD -> departamentos: {invalid_departments}, trabajos: {invalid_jobs}"
+                    )
+
+                # Insertar datos en la base de datos
+                df.to_sql(table, engine, if_exists="append", index=False)
 
         return {"message": "Datos insertados correctamente"}
+    
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        error_detail = traceback.format_exc()
+        print(error_detail)
+        raise HTTPException(status_code=500, detail=f"Error interno: {str(e)}")
 
 # Endpoint para obtener empleados contratados por trimestre, departamento y trabajo
 @app.get("/employees_per_department")
