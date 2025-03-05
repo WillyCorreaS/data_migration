@@ -12,13 +12,13 @@ Mover datos históricos desde archivos en formato CSV a la nueva base de datos.
 
 ✅ Crear un servicio API REST para recibir nuevos datos, asegurando que:
 
-### 🔹 Cada nueva transacción cumpla con las reglas del diccionario de datos.
+#### 🔹 Cada nueva transacción cumpla con las reglas del diccionario de datos.
 
-### 🔹 Se puedan insertar transacciones en lotes (de 1 a 1000 filas en una sola solicitud).
+#### 🔹 Se puedan insertar transacciones en lotes (de 1 a 1000 filas en una sola solicitud).
 
-### 🔹 Se pueda recibir la información para todas las tablas en el mismo servicio.
+#### 🔹 Se pueda recibir la información para todas las tablas en el mismo servicio.
 
-### 🔹 Se respeten las reglas de datos para cada tabla.
+#### 🔹 Se respeten las reglas de datos para cada tabla.
 
 ✅ Implementar una funcionalidad para hacer copias de seguridad de cada tabla y almacenarlas en el sistema de archivos en formato AVRO.
 
@@ -110,10 +110,12 @@ La API estará disponible en: **http://127.0.0.1:8000/docs**
 📁 data_migration/
 │── 📂 data/                # Archivos de datos CSV y backups en formato AVRO
 │── 📜 main.py              # API REST con FastAPI
-│── 📜 load_data.py         # Script para cargar datos en PostgreSQL
+│── 📜 etl_data.py          # Script para cargar datos en PostgreSQL
 │── 📜 backup.py            # Script para realizar backups en AVRO
 │── 📜 restore.py           # Script para restaurar la base de datos desde AVRO
 │── 📜 conexion_db.py       # Conexión a PostgreSQL con SQLAlchemy
+│── 📜 test_db.py           # Script para test DB en PostgreSQL
+│── 📜 truncate.py          # Script para truncar las tablas en PostgreSQL
 │── 📜 requirements.txt     # Dependencias del proyecto
 │── 📜 README.md            # Documentación del proyecto
 ```
@@ -173,5 +175,4 @@ python restore.py
 
 ---
 ## 🚀 **Notas Finales**
-Si encuentras algún problema, revisa que la base de datos **PostgreSQL** esté corriendo y que las dependencias estén correctamente instaladas!. 💻🔥
-
+Si encuentras algún problema, revisa que la base de datos **PostgreSQL** esté corriendo y que las dependencias estén correctamente instaladas! 💻🔥
