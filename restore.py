@@ -12,7 +12,7 @@ def restore_table(table_name):
             records = [record for record in reader]  # Leer los datos del archivo AVRO
 
         if not records:
-            print(f"El archivo {file_path} está vacío. No se restauró la tabla {table_name}.")
+            print(f"El archivo {file_path} está vacío. No se restauró la tabla {table_name}.") #Valida que el archivo no esté vacío
             return
 
         df = pd.DataFrame(records)

@@ -42,6 +42,10 @@ async def insert(data: dict = Body(...)):
                 # Validar que no haya valores nulos
                 if df.isnull().values.any():
                     raise HTTPException(status_code=400, detail=f"La tabla {table} contiene valores nulos.")
+                
+                # Inicializar variables para evitar error de referencia
+                invalid_departments = []
+                invalid_jobs = []
 
                 # Validar FK en hired_employees
                 if table == "hired_employees":

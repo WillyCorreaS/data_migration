@@ -1,4 +1,3 @@
-import pyarrow as pa
 import fastavro
 import pandas as pd
 from conexion_db import get_engine
@@ -29,7 +28,7 @@ def backup_table(table_name):
     df = pd.read_sql(f"SELECT * FROM {table_name}", get_engine())
 
     if df.empty:
-        print(f"La tabla {table_name} está vacía. No se generó el backup.")
+        print(f"La tabla {table_name} está vacía. No se generó el backup.") #Validación tabla vacía
         return
 
     # Convertir columnas datetime a string
